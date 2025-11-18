@@ -1,0 +1,83 @@
+trigger:
+  branches:
+    include:
+      - master
+
+variables:
+  appServiceName: "vendor-onboarding-mgmt"            # your Azure App Service name
+  azureServiceConnection: "DevXcelerateSC"  # your service connection
+  javaVersion: "17"
+
+stages:
+
+# ------------------------ BUILD ------------------------
+- stage: Build
+  displayName: "Build Backend + Vite Frontend"
+  jobs:
+    - job: BuildJob
+      pool:
+        vmImage: 'ubuntu-latest'
+
+      steps:
+
+        # ---------- Install Node for Vite ----------
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '18.x'
+          displayName: "Install Node.js"
+
+        - script: |
+            cd vendor-mgmt-frontend
+            npm install
+            npm run build       # Vite → dist/
+          displayName: "Build Vite Frontend"
+
+        # ---------- Copy Vite 'dist' → Spring Boot static ----------
+        - script: |
+            rm -rf vendor-mgmt-backend/src/main/resources/static
+            mkdir -p vendor-mgmt-backend/src/main/resources/static
+            cp -R vendor-mgmt-frontend/dist/* vendor-mgmt-backend/src/main/resources/static/
+          displayName: "Copy Vite dist/ to Spring Boot static/"
+
+        # ---------- Build Spring Boot JAR ----------
+        - task: Maven@3
+          inputs:
+            mavenPomFile: "vendor-mgmt-backend/pom.xml"
+            goals: "clean package -DskipTests"
+            jdkVersionOption: "1.17"
+          displayName: "Build Spring Boot JAR"
+         # ---------- Prepare artifact folder ----------
+        - script: |
+            mkdir -p artifact
+            cp vendor-mgmt-backend/target/vendor-mgmt-backend-1.0.0.jar artifact/
+          displayName: "Prepare artifact folder"
+
+        # ---------- Publish Artifact ----------
+        - task: PublishBuildArtifacts@1
+          inputs:
+            pathToPublish: "artifact"
+            artifactName: "full-app"
+
+# ------------------------ DEPLOY ------------------------
+- stage: Deploy
+  dependsOn: Build
+  displayName: "Deploy Combined App to Azure App Service"
+
+  jobs:
+    - job: DeployJob
+      pool:
+        vmImage: "ubuntu-latest"
+
+      steps:
+        - download: current
+          artifact: full-app
+
+        - task: AzureWebApp@1
+          inputs:
+            azureSubscription: $(azureServiceConnection)
+            appName: $(appServiceName)
+            package: "$(Pipeline.Workspace)/full-app/vendor-mgmt-backend-1.0.0.jar"
+            runtimeStack: "JAVA|17-java17"
+            removeAdditionalFilesFlag: true
+            startupCommand: 'java -jar /home/site/wwwroot/vendor-mgmt-backend-1.0.0.jar'
+          displayName: "Deploy JAR to Azure App Service"
