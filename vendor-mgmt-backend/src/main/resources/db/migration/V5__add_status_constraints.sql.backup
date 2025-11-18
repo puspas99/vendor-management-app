@@ -1,0 +1,15 @@
+-- Add check constraints to ensure only valid enum values are stored
+
+-- Add check constraint to vendor.status
+IF NOT EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK_vendor_status')
+BEGIN
+    ALTER TABLE dbo.vendor ADD CONSTRAINT CK_vendor_status 
+    CHECK (status IN ('REQUESTED', 'AWAITING_RESPONSE', 'MISSING_DATA', 'AWAITING_VALIDATION', 'VALIDATED', 'DENIED', 'DELETED'));
+END
+
+-- Add check constraint to vendor_onboarding.status
+IF NOT EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK_vendor_onboarding_status')
+BEGIN
+    ALTER TABLE dbo.vendor_onboarding ADD CONSTRAINT CK_vendor_onboarding_status 
+    CHECK (status IN ('REQUESTED', 'AWAITING_RESPONSE', 'MISSING_DATA', 'AWAITING_VALIDATION', 'VALIDATED', 'DENIED', 'DELETED') OR status IS NULL);
+END

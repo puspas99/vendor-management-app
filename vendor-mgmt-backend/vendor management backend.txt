@@ -1,0 +1,200 @@
+You are an advanced code generator. Create a complete Spring Boot 3 / Java 17 project for below.
+Design and develop an intelligent vendor onboarding system that helps the procurement team manage registrations, validations, and automated follow-ups seamlessly. 
+Core Functional Flow	
+    1. Vendor Onboarding Request 
+        a. A new vendor onboarding request is raised by the procurement team. Use the defined Vendor Details Request Form to capture vendor details, save the request, and trigger an email invitation with a secure link to the vendor for onboarding. 
+    2. Vendor Onboarding Invitation
+        a. Once the procurement team submits a vendor onboarding request, the system should automatically send an email invitation to the vendor. The email must contain a secure link that directs the vendor to the onboarding form.
+        b. Vendors should authenticate themselves using email-based OTP login before accessing the form. After successful verification, the vendor can fill in the details as defined in the Vendor Onboarding Form Fields section and submit the information for procurement review.
+    3. Procurement Team Dashboard
+        a. The procurement team should have access to a centralized dashboard that provides visibility into all vendor onboarding requests, including active, completed, and discarded vendors. This dashboard should display vendor details, onboarding status, and allow the procurement team to manage validations, follow-ups, and communications efficiently. Implement the listed key functionalities as defined in the Vendor Dashboard Key Functionalities.
+    4. Detailed vendor view 
+        a. From the procurement dashboard, users should be able to click on any vendor to access a detailed vendor view. This page provides complete visibility into the vendor’s submitted information and all related communications or follow-ups.
+    5. Vendor Follow-up Management
+        a. The system should support vendor communication and follow-up workflows to ensure timely and accurate completion of the onboarding process. Follow-ups can be triggered automatically or manually based on validation results and vendor response status.
+        b. The follow-up actions should be determined based on the validity criteria defined in the respective form fields. When a vendor submits incomplete, incorrect, or invalid information, the system should automatically identify the issue type and trigger the corresponding follow-up action (e.g., missing data, incorrect data, incorrect file, delayed response) from the available functionalities. All required follow-up functionalities should be implemented to ensure smooth and timely communication.
+        c. Additionally, the procurement team should have the flexibility to manually initiate follow-ups when required, for example, to resend reminders, request clarifications, or handle specific communication scenarios.
+        d. The system should also track and display all follow-up communications within the vendor’s detailed view, maintaining a complete timeline of actions and responses for transparency.named vendor management  implementing Vendor Onboarding Request: Procurement initiates the request, triggering an email with a secure onboarding link.
+
+1.Vendor Details Request Form-
+Vendor Name
+Vendor Email
+Contact Person
+Contact Number
+Vendor Category
+Remarks
+
+2.Business Details:
+
+Legal Business Name
+Business Registration Number
+Business Type
+Year Established
+Business Address
+Number of Employees
+Industry/Sector
+File Upload
+
+3. Contact Details:
+
+Primary Contact Name
+Job Title
+Email Address
+Phone Number
+Secondary Contact Name
+Secondary Contact Email
+Website
+
+4.Banking & Payment
+
+Bank Name
+Account Holder Name
+Account Number
+Account Type
+Routing/SWIFT Code
+IBAN (if applicable)
+Payment Terms
+Currency
+
+5. Compliance & Certifications
+Tax Identification Number
+Business License Number
+License Expiry Date
+Insurance Provider
+Insurance Policy Number
+Insurance Expiry Date
+Industry Certifications
+
+Vendor Authentication: Email-based OTP for authentication before accessing the onboarding form.
+
+Procurement Dashboard: Centralized system for the procurement team to view and manage onboarding requests.
+
+Vendor Follow-Up: Automated/manual follow-ups based on validation errors or missing information.
+
+. Follow every instruction below exactly. Produce only the repository files . Do not include any extra commentary or analysis.
+
+General constraints & coding standards:
+
+Use Java 17, Spring Boot 3.x, Spring Security, Spring Data JPA, sql server driver,  Lombok allowed but avoid overuse.
+
+Add maven (pom.xml) as build tool.
+
+Use package com.evoke.vendor
+
+Use application.yml for configuration with spring.profiles for dev and prod.
+
+
+Use @Validated, jakarta validation annotations.
+
+Add null-safety and defensive programming:
+
+Use Objects.requireNonNull in constructors and public methods where appropriate.
+
+Use Optional for repo finders returning nothing.
+
+Add @NonNull where appropriate (Lombok @NonNull or Jakarta @NotNull).
+
+Validate input DTOs with @Valid.
+
+Sonar-friendly:
+
+No empty catch blocks.
+
+No hard-coded secrets except placeholders in application.yml.
+
+Avoid magic numbers; keep constants in a Constants class.
+
+Use logging (SLF4J) and do not log secrets.
+
+Proper variable naming, reduce code duplication, small methods.
+
+Testing:
+
+Include unit tests for AuthService, JwtProvider, RefreshTokenService.
+
+Include at least one integration test for registration -> login -> access protected endpoint using @SpringBootTest and TestRestTemplate or MockMvc.
+
+Key API Endpoints and Functions
+a. Vendor Onboarding Request
+
+POST /api/vendor/onboarding-request
+
+Endpoint to initiate a new vendor onboarding request.
+
+Receives basic details (e.g., Vendor Name, Email, Category).
+
+Sends an invitation email with an OTP-based secure link for vendor authentication.
+
+b. Vendor Authentication
+
+POST /api/vendor/otp
+
+Endpoint for generating and sending OTP to the vendor's email.
+
+Validates OTP for user authentication.
+
+c. Vendor Onboarding Form Submission
+
+POST /api/vendor/onboarding
+
+Endpoint where vendors submit their onboarding details.
+
+Validates uploaded files and form fields (e.g., Business Details, Compliance, Banking Info).
+
+Save details in the database.
+
+d. Procurement Dashboard
+
+GET /api/procurement/vendors
+
+Endpoint to get a list of all vendors with filtering options based on status.
+
+GET /api/procurement/vendor/{id}
+
+Endpoint to view detailed information of a specific vendor.
+
+e. Follow-up Management
+
+POST /api/procurement/vendor/{id}/follow-up
+
+Endpoint to trigger follow-up actions for incomplete or invalid vendor information.
+
+GET /api/procurement/vendor/{id}/follow-ups
+
+Endpoint to retrieve all follow-up actions for a vendor.
+
+4. Security and Authentication
+
+Use Spring Security with email-based OTP for vendor authentication.
+
+JWT or OAuth2 tokens can be used for secure access to APIs after OTP verification.
+
+5. Email Notifications
+
+Use Spring Email or Spring Boot Starter Mail to send email invitations with secure links to vendors.
+
+The email will contain OTPs for vendor login and a link to complete the onboarding process.
+
+6. File Validation and Parsing
+
+Implement file validation (e.g., PDF) to match uploaded files with form fields.
+
+Use libraries like Apache POI or iText to parse and validate PDF uploads (e.g., Business Details, Compliance).
+
+7. Automated Follow-Up Logic
+
+AI-Powered Follow-Up: Use GitHub Copilot to generate dynamic email templates based on validation results.
+
+Example: Follow-up email for missing data or incorrect documents.
+
+
+9. Testing
+
+Unit Testing: Write tests using JUnit and Mockito to validate core functionalities (e.g., form submission, email sending).
+
+Integration Testing: Ensure that frontend-backend communication works (mock external APIs, such as email services).
+
+AI Testing: Ensure that the AI-generated follow-up messages have the correct tone and context
+
+
+

@@ -1,0 +1,63 @@
+-- Add status and deletedAt columns to vendor and vendor_onboarding tables
+
+-- Update vendor table (vendor requests)
+-- First, add the new columns
+-- Add status and deletedAt columns to vendor and vendor_onboarding tables
+
+-- Ensure vendor.status exists (add if missing)
+IF COL_LENGTH('dbo.vendor','status') IS NULL
+BEGIN
+    ALTER TABLE dbo.vendor ADD status NVARCHAR(50) NOT NULL DEFAULT 'REQUESTED';
+END
+
+-- Ensure vendor.deleted_at exists
+IF COL_LENGTH('dbo.vendor','deleted_at') IS NULL
+BEGIN
+    ALTER TABLE dbo.vendor ADD deleted_at DATETIME2;
+END
+
+-- Update existing records to use new enum values (only affects rows with old values)
+IF COL_LENGTH('dbo.vendor','status') IS NOT NULL
+BEGIN
+    -- First update any records that might have 'COMPLETED' to 'VALIDATED'
+    EXEC('UPDATE dbo.vendor
+    SET status = ''VALIDATED''
+    WHERE UPPER(status) = ''COMPLETED''');
+    
+    -- Then handle other old status values
+    EXEC('UPDATE dbo.vendor
+    SET status = CASE 
+        WHEN UPPER(status) = ''PENDING'' THEN ''REQUESTED''
+        WHEN UPPER(status) = ''IN_PROGRESS'' THEN ''AWAITING_RESPONSE''
+        WHEN UPPER(status) = ''DISCARDED'' THEN ''DENIED''
+        WHEN UPPER(status) = ''ACTIVE'' THEN ''VALIDATED''
+        ELSE status
+    END
+    WHERE UPPER(status) IN (''PENDING'', ''IN_PROGRESS'', ''DISCARDED'', ''ACTIVE'')');
+END
+
+-- Ensure vendor.status column type/length (run only if column exists)
+IF COL_LENGTH('dbo.vendor','status') IS NOT NULL
+BEGIN
+    ALTER TABLE dbo.vendor ALTER COLUMN status NVARCHAR(50) NOT NULL;
+END
+
+-- Add status and deleted_at to vendor_onboarding if missing
+IF COL_LENGTH('dbo.vendor_onboarding','status') IS NULL
+BEGIN
+    ALTER TABLE dbo.vendor_onboarding ADD status NVARCHAR(50) NULL;
+END
+
+IF COL_LENGTH('dbo.vendor_onboarding','deleted_at') IS NULL
+BEGIN
+    ALTER TABLE dbo.vendor_onboarding ADD deleted_at DATETIME2;
+END
+
+-- Update vendor_onboarding status based on vendor_request status (only if both columns exist)
+IF COL_LENGTH('dbo.vendor_onboarding','status') IS NOT NULL AND COL_LENGTH('dbo.vendor','status') IS NOT NULL
+BEGIN
+    EXEC('UPDATE vo
+    SET vo.status = vr.status
+    FROM dbo.vendor_onboarding vo
+    INNER JOIN dbo.vendor vr ON vo.vendor_request_id = vr.id');
+END

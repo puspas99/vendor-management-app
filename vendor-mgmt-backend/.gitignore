@@ -1,0 +1,46 @@
+# Compiled class files
+*.class
+target/
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Uploads
+uploads/
+*.pdf
+*.doc
+*.docx
+
+# Environment files
+.env
+.env.local
+application-local.yml
+
+# Test coverage
+coverage/
+*.exec

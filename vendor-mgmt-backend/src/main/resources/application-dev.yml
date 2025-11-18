@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    # Default is Azure SQL (Microsoft SQL Server). Override with environment variables if needed.
+    # Example Azure SQL JDBC URL:
+    # jdbc:sqlserver://<your-server>.database.windows.net:1433;databaseName=<db-name>;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+    url: "${SPRING_DATASOURCE_URL:jdbc:sqlserver://evokehackathonsqlserver.database.windows.net:1433;databaseName=DevXcelerateDB;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;}"
+    username: "${SPRING_DATASOURCE_USERNAME:DevXcelerateSQLUser}"
+    password: "${SPRING_DATASOURCE_PASSWORD:3bSsrk93DK0F5eKY}"
+    # Default driver for Azure SQL
+    driver-class-name: "${SPRING_DATASOURCE_DRIVER:com.microsoft.sqlserver.jdbc.SQLServerDriver}"
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+    livereload:
+      enabled: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:puspas99@gmail.com}
+    password: ${MAIL_PASSWORD:xbwx nnac vdzh nbxa}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    test-connection: false
+
+logging:
+  level:
+    com.evoke.vendor: DEBUG
