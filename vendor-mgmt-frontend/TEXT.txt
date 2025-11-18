@@ -1,0 +1,19 @@
+Background
+Vendor onboarding is a critical process in any organization’s supply chain management. It involves collecting, verifying, and approving information from new suppliers or service providers before they are authorized to deliver goods or services. A smooth and efficient onboarding process ensures that the right vendors are engaged quickly, compliance requirements are met, and procurement operations run without delays.
+Build Requirements
+Design and develop an intelligent vendor onboarding system that helps the procurement team manage registrations, validations, and automated follow-ups seamlessly, leveraging AI-powered code generation tools like GitHub Copilot or Cursor AI to accelerate development. 
+Core Functional Flow	
+    1. Vendor Onboarding Request 
+        a. A new vendor onboarding request is raised by the procurement team. Use the defined Vendor Details Request Form to capture vendor details, save the request, and trigger an email invitation with a secure link to the vendor for onboarding. 
+    2. Vendor Onboarding Invitation
+        a. Once the procurement team submits a vendor onboarding request, the system should automatically send an email invitation to the vendor. The email must contain a secure link that directs the vendor to the onboarding form.
+        b. Vendors should authenticate themselves using email-based OTP login before accessing the form. After successful verification, the vendor can fill in the details as defined in the Vendor Onboarding Form Fields section and submit the information for procurement review.
+    3. Procurement Team Dashboard
+        a. The procurement team should have access to a centralized dashboard that provides visibility into all vendor onboarding requests, including active, completed, and discarded vendors. This dashboard should display vendor details, onboarding status, and allow the procurement team to manage validations, follow-ups, and communications efficiently. Implement the listed key functionalities as defined in the Vendor Dashboard Key Functionalities.
+    4. Detailed vendor view 
+        a. From the procurement dashboard, users should be able to click on any vendor to access a detailed vendor view. This page provides complete visibility into the vendor’s submitted information and all related communications or follow-ups.
+    5. Vendor Follow-up Management
+        a. The system should support vendor communication and follow-up workflows to ensure timely and accurate completion of the onboarding process. Follow-ups can be triggered automatically or manually based on validation results and vendor response status.
+        b. The follow-up actions should be determined based on the validity criteria defined in the respective form fields. When a vendor submits incomplete, incorrect, or invalid information, the system should automatically identify the issue type and trigger the corresponding follow-up action (e.g., missing data, incorrect data, incorrect file, delayed response) from the available functionalities. All required follow-up functionalities should be implemented to ensure smooth and timely communication.
+        c. Additionally, the procurement team should have the flexibility to manually initiate follow-ups when required, for example, to resend reminders, request clarifications, or handle specific communication scenarios.
+        d. The system should also track and display all follow-up communications within the vendor’s detailed view, maintaining a complete timeline of actions and responses for transparency.
